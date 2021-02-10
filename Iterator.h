@@ -9,9 +9,9 @@ public:
 	Iterator<T>(Node<T>* node);
 	Iterator<T> operator ++();
 	Iterator<T> operator --();
-	const bool Iterator<T> operator ==(const Iterator<T>& iter);
+	const bool operator ==(const Iterator<T>& iter);
 	const bool operator != (const Iterator<T>& iter);
-	T operator* ();
+	T operator* () { return m_current->data };
 private:
 	Node<T> m_current;
 };
@@ -36,4 +36,16 @@ inline Iterator<T> Iterator<T>::operator--()
 	if (current.previous)
 		current = current.previous;
 	return Iterator<T>(current);
+}
+
+template<typename T>
+const bool Iterator<T>::operator!=(const Iterator<T>& iter)
+{
+
+}
+
+template<typename T>
+const bool Iterator<T>::operator==(const Iterator<T>& iter)
+{
+
 }
