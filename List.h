@@ -10,8 +10,8 @@ public:
 	List<T>(List<T>& list);
 	~List<T>();
 	void destroy();
-	Iterator<T> begin() const;
-	Iterator<T> end() const;
+	Iterator<T> begin() const { return m_head; };
+	Iterator<T> end() const { return m_tail; };
 	bool contains(const T& object);
 	void pushFront(const T& value);
 	void pushBack(const T& value);
@@ -46,7 +46,7 @@ inline List<T>::List(List<T>& list)
 template<typename T>
 inline List<T>::~List()
 {
-
+	delete[] m_nodeCount;
 }
 
 template<typename T>
@@ -92,19 +92,51 @@ inline void List<T>::pushBack(const T& value)
 template<typename T>
 inline bool List<T>::insert(const T& value, int index)
 {
+	T* temp = new T[getLength() + 1];
+	for (int i = 0; i < getLength(); i++)
+	{
+		temp[i] = m_nodeCount[i];
+	}
 
+	temp[getLength()] = m_nodeCount;
+
+	m_nodeCount = temp;
+
+	getLength()++;
 }
 
 template<typename T>
 inline bool List<T>::remove(const T& value)
 {
+	bool removed = false;
+	T* temp = new T[getLength() - 1];
 
+	int j = 0;
+	for (int i = 0; i < getLength(); i++)
+	{
+		if (value != temp[i])
+		{
+			temp[j] = m_nodeCount[i];
+			j++;
+		}
+		else
+		{
+			removed = true; 
+		}
+	}
+	m_nodeCount = temp;
+
+	getLength()--;
+	return removed;
 }
 
 template<typename T>
 const void List<T>::print()
 {
-
+	for (Iterator<int> iter = begin(); iter != end(); ++iter)
+	{
+		std::cout << *iter << std::endl;
+	}
 }
 
 template<typename T>
@@ -116,29 +148,44 @@ inline void List<T>::initalize()
 template<typename T>
 const bool List<T>::isEmpty()
 {
-
+	return m_nodeCount == nullptr;
 }
 
 template<typename T>
 inline bool List<T>::getData(Iterator<T>& iter, int index)
 {
+	iter = begin();
 
+	for (int i = 0; i < index; i++)
+		iter++;
+
+	return false;
 }
 
 template<typename T>
 const int List<T>::getLength()
 {
-
+	return m_nodeCount;
 }
 
 template<typename T>
 inline void List<T>::deleteNode(const T& object)
 {
-
+	return delete(this);
 }
 
 template<typename T>
 inline void List<T>::sort()
 {
-
+	Iterator<T> it = begin();
+	Iterator<T> ti = end();
+	for (int i = 0; i < getLength(); i++)
+	{
+		for (int j = getLength() - 1; j > i; j--)
+		{
+			Iterator<T> temp = ti;
+			ti = it;
+			it = temp;
+		}
+	}
 }
