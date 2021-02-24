@@ -52,7 +52,7 @@ inline List<T>::~List()
 template<typename T>
 inline void List<T>::destroy()
 {
-
+	delete this;
 }
 
 template<typename T>
@@ -68,7 +68,7 @@ inline void List<T>::pushFront(const T& value)
 	{
 		m_head = value;
 		m_tail = value;
-		value->nullptr;
+		value = nullptr;
 	}
 	value.previous = nullptr;
 	value.next = nullptr;
@@ -82,7 +82,7 @@ inline void List<T>::pushBack(const T& value)
 	{
 		m_head = value;
 		m_tail = value;
-		value->nullptr;
+		value = nullptr;
 	}
 	value.previous = nullptr;
 	value.next = nullptr;
