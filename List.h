@@ -10,10 +10,10 @@ public:
 	List<T>(List<T>& list);
 	~List<T>();
 	void destroy();
-	Iterator<T> begin() const { return m_head; };
-	Iterator<T> end() const { return m_tail; };
+	Iterator<T> begin() const { return Iterator<T>(m_head); };
+	Iterator<T> end() const { return Iterator<T>(m_tail); };
 	bool contains(const T& object);
-	void pushFront(const T& value);
+	const void pushFront(const T& value);
 	void pushBack(const T& value);
 	bool insert(const T& value, int index);
 	bool remove(const T& value);
@@ -26,8 +26,8 @@ public:
 	const List<T>& operator = (const List<T>& otherList);
 	void sort();
 private:
-	Node<T> m_head = nullptr;
-	Node<T> m_tail = nullptr;
+	Node<T>* m_head = nullptr;
+	Node<T>* m_tail = nullptr;
 	int m_nodeCount = 0;
 };
 
@@ -40,69 +40,89 @@ inline List<T>::List()
 template<typename T>
 inline List<T>::List(List<T>& list)
 {
-	this = list;
+	m_head = nullptr;
+	m_tail = nullptr;
+	m_head->previous = nullptr;
+	m_tail->next = nullptr;
 }
 
 template<typename T>
 inline List<T>::~List()
 {
-	delete[] m_nodeCount;
+	delete List<T>;
 }
 
 template<typename T>
 inline void List<T>::destroy()
 {
-	delete this;
+
 }
 
 template<typename T>
 inline bool List<T>::contains(const T& object)
 {
+	bool present = false;
+	Iterator iter = begin();
 
+	while (iter != end())
+	{
+		iter++;
+
+		if (iter == object)
+		{
+			present = true;
+		}
+	}
+	return present;
 }
 
 template<typename T>
-inline void List<T>::pushFront(const T& value)
+inline const void List<T>::pushFront(const T& value)
 {
-	if (value.previous = nullptr || value.next = nullptr)
-	{
-		m_head = value;
-		m_tail = value;
-		value = nullptr;
-	}
-	value.previous = nullptr;
-	value.next = nullptr;
-	m_head = value;
+	Node<T>* newNode = new Node<T>(value);
+	m_head->previous = newNode;
+	newNode->next = m_head;
+
+	newNode->previous = nullptr;
+	m_head = newNode;
+
+	m_nodeCount++;
+
+	if (m_nodeCount == 1)
+		m_tail = newNode;
+	else if (m_nodeCount == 2)
+		m_tail = newNode->next;
 }
 
 template<typename T>
 inline void List<T>::pushBack(const T& value)
 {
-	if (value.previous = nullptr || value.next = nullptr)
-	{
-		m_head = value;
-		m_tail = value;
-		value = nullptr;
-	}
-	value.previous = nullptr;
-	value.next = nullptr;
-	m_tail = value;
+	Node<T>* newNode = new Node<T>(value);
+	m_tail->next = newNode;
+	newNode->previous = m_tail;
+	newNode->next = nullptr;
+	m_tail = newNode;
+
+	m_nodeCount++;
+
+	if (m_nodeCount == 1)
+		m_head = newNode;
+	else if (m_nodeCount == 2)
+		m_head = newNode->previous;
 }
 
 template<typename T>
 inline bool List<T>::insert(const T& value, int index)
 {
-	T* temp = new T[getLength() + 1];
-	for (int i = 0; i < getLength(); i++)
-	{
-		temp[i] = m_nodeCount[i];
-	}
+	bool isInserted = false;
+	Node<T>* temp = &Node<T>(value);
+	Iterator<T> iter = begin();
 
-	temp[getLength()] = m_nodeCount;
+	temp->next = m_head;
+	m_head->previous = temp;
+	isInserted = true;
 
-	m_nodeCount = temp;
-
-	getLength()++;
+	return isInserted;
 }
 
 template<typename T>
@@ -133,16 +153,19 @@ inline bool List<T>::remove(const T& value)
 template<typename T>
 const void List<T>::print()
 {
-	for (Iterator<int> iter = begin(); iter != end(); ++iter)
+	for (Iterator<int> iter = begin(); iter != end(); iter = ++iter)
 	{
 		std::cout << *iter << std::endl;
 	}
+	
 }
 
 template<typename T>
 inline void List<T>::initalize()
 {
-
+	m_head = new Node<T>();
+	m_tail = new Node<T>();
+	m_nodeCount = 0;
 }
 
 template<typename T>
